@@ -58,6 +58,12 @@ export const searchSearxng = async (
 ) => {
   const searxngURL = getSearxngApiEndpoint();
   
+  // Check if SearXNG URL is configured
+  if (!searxngURL || searxngURL.trim() === '') {
+    console.warn('⚠️ SearXNG URL is not configured. Web search disabled.');
+    return { results: [], suggestions: [] };
+  }
+  
   // Optimize query for finance content
   const optimizedQuery = optimizeQueryForFinance(query, opts?.engines);
 
@@ -67,7 +73,16 @@ export const searchSearxng = async (
     return { results: [], suggestions: [] };
   }
 
-  const url = new URL(`${searxngURL}/search?format=json`);
+  let url: URL;
+  try {
+    // Ensure we have a valid absolute URL
+    const baseUrl = searxngURL.endsWith('/') ? searxngURL.slice(0, -1) : searxngURL;
+    url = new URL(`${baseUrl}/search?format=json`);
+  } catch (error: any) {
+    console.error('⚠️ Invalid SearXNG URL format:', searxngURL, error.message);
+    return { results: [], suggestions: [] };
+  }
+  
   url.searchParams.append('q', optimizedQuery);
 
   if (opts) {

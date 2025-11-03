@@ -10,6 +10,7 @@ export const searchHandlers: Record<string, MetaSearchAgent> = {
     rerankThreshold: 0.3,
     searchWeb: true,
     maxSources: 10,
+    focusMode: 'webSearch',
   }),
   academicSearch: new MetaSearchAgent({
     activeEngines: ['arxiv', 'google scholar', 'pubmed'],
@@ -19,6 +20,7 @@ export const searchHandlers: Record<string, MetaSearchAgent> = {
     rerankThreshold: 0,
     searchWeb: true,
     maxSources: 12,
+    focusMode: 'academicSearch',
   }),
   news: new MetaSearchAgent({
     activeEngines: ['google news', 'bing news', 'yahoo news', 'brave.news', 'google', 'bing', 'yahoo', 'duckduckgo', 'qwant news'],
@@ -28,6 +30,7 @@ export const searchHandlers: Record<string, MetaSearchAgent> = {
     rerankThreshold: 0.2,
     searchWeb: true,
     maxSources: 12,
+    focusMode: 'news',
   }),
   macroEconomy: new MetaSearchAgent({
     activeEngines: ['google', 'bing', 'brave', 'duckduckgo', 'google news'],
@@ -37,6 +40,7 @@ export const searchHandlers: Record<string, MetaSearchAgent> = {
     rerankThreshold: 0.2,
     searchWeb: true,
     maxSources: 10,
+    focusMode: 'macroEconomy',
   }),
   fundamentals: new MetaSearchAgent({
     activeEngines: ['google', 'bing', 'brave', 'yahoo', 'duckduckgo'],
@@ -46,6 +50,7 @@ export const searchHandlers: Record<string, MetaSearchAgent> = {
     rerankThreshold: 0.3,
     searchWeb: true,
     maxSources: 10,
+    focusMode: 'fundamentals',
   }),
   social: new MetaSearchAgent({
     activeEngines: ['reddit', 'youtube', 'google', 'bing', 'brave', 'duckduckgo', 'qwant news'],
@@ -55,6 +60,7 @@ export const searchHandlers: Record<string, MetaSearchAgent> = {
     rerankThreshold: 0.2,
     searchWeb: true,
     maxSources: 12,
+    focusMode: 'social',
   }),
   writingAssistant: new MetaSearchAgent({
     activeEngines: [],
@@ -65,6 +71,7 @@ export const searchHandlers: Record<string, MetaSearchAgent> = {
     searchWeb: false,
     summarizer: false, // Explicitly disable for writing assistant since it doesn't search web
     maxSources: 5,
+    focusMode: 'writingAssistant',
   }),
   wolframAlphaSearch: new MetaSearchAgent({
     activeEngines: ['wolframalpha'],
@@ -74,6 +81,7 @@ export const searchHandlers: Record<string, MetaSearchAgent> = {
     rerankThreshold: 0,
     searchWeb: true,
     maxSources: 10,
+    focusMode: 'wolframAlphaSearch',
   }),
   youtubeSearch: new MetaSearchAgent({
     activeEngines: ['youtube'],
@@ -83,6 +91,7 @@ export const searchHandlers: Record<string, MetaSearchAgent> = {
     rerankThreshold: 0.3,
     searchWeb: true,
     maxSources: 10,
+    focusMode: 'youtubeSearch',
   }),
   redditSearch: new MetaSearchAgent({
     activeEngines: ['reddit'],
@@ -92,5 +101,6 @@ export const searchHandlers: Record<string, MetaSearchAgent> = {
     rerankThreshold: 0.3,
     searchWeb: true,
     maxSources: 10,
+    focusMode: 'redditSearch',
   }),
 };

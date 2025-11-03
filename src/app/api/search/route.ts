@@ -9,6 +9,10 @@ import { MetaSearchAgentType } from '@/lib/search/metaSearchAgent';
 import { searchHandlers } from '@/lib/search';
 import { createCustomModel, validateCustomModel } from '@/lib/providers/customModels';
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 interface chatModel {
   provider: string;
   model: string;
@@ -166,6 +170,20 @@ export const POST = async (req: Request) => {
         ) => {
           let message = '';
           let sources: any[] = [];
+          
+          // Add 10 minute timeout for very complex queries
+          const timeout = setTimeout(() => {
+            console.error('[ERROR] Search request timed out after 10 minutes');
+            reject(
+              Response.json(
+                { 
+                  message: 'Request timed out. The AI model took too long to respond.',
+                  sources: sources
+                },
+                { status: 504 },
+              ),
+            );
+          }, 600000);
 
           emitter.on('data', (data: string) => {
             try {
@@ -176,6 +194,7 @@ export const POST = async (req: Request) => {
                 sources = parsedData.data;
               }
             } catch (error) {
+              clearTimeout(timeout);
               reject(
                 Response.json(
                   { message: 'Error parsing data' },
@@ -186,13 +205,28 @@ export const POST = async (req: Request) => {
           });
 
           emitter.on('end', () => {
+            clearTimeout(timeout);
             resolve(Response.json({ message, sources }, { status: 200 }));
           });
 
           emitter.on('error', (error: any) => {
+            clearTimeout(timeout);
+            // Check for API key errors
+            if (error?.message?.includes('API key not valid') || error?.message?.includes('API_KEY_INVALID')) {
+              reject(
+                Response.json(
+                  { 
+                    message: 'Invalid API key. Please check your model configuration in settings.',
+                    error: 'The API key for the selected model is invalid or expired. Please update it in your config.toml file.'
+                  },
+                  { status: 401 },
+                ),
+              );
+              return;
+            }
             reject(
               Response.json(
-                { message: 'Search error', error },
+                { message: 'Search error', error: error?.message || error },
                 { status: 500 },
               ),
             );
@@ -274,6 +308,19 @@ export const POST = async (req: Request) => {
         emitter.on('error', (error: any) => {
           if (signal.aborted) return;
 
+          // Check for API key errors and send a proper error message
+          if (error?.message?.includes('API key not valid') || error?.message?.includes('API_KEY_INVALID')) {
+            controller.enqueue(
+              encoder.encode(
+                JSON.stringify({
+                  type: 'error',
+                  data: 'Invalid API key. Please check your model configuration in settings. The API key for the selected model is invalid or expired. Please update it in your config.toml file.',
+                }) + '\n',
+              ),
+            );
+            controller.close();
+            return;
+          }
           controller.error(error);
         });
       },
@@ -291,6 +338,18 @@ export const POST = async (req: Request) => {
     });
   } catch (err: any) {
     console.error(`Error in getting search results: ${err.message}`);
+    
+    // Check for API key errors
+    if (err?.message?.includes('API key not valid') || err?.message?.includes('API_KEY_INVALID')) {
+      return Response.json(
+        { 
+          message: 'Invalid API key. Please check your model configuration in settings.',
+          error: 'The API key for the selected model is invalid or expired. Please update it in your config.toml file.'
+        },
+        { status: 401 },
+      );
+    }
+    
     return Response.json(
       { message: 'An error has occurred.' },
       { status: 500 },

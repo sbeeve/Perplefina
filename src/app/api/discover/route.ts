@@ -1,5 +1,9 @@
 import { searchSearxng } from '@/lib/searxng';
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 const websitesForTopic = {
   markets: {
     query: ['stock market news', 'market analysis', 'trading', 'indices', 'S&P 500', 'NASDAQ'],

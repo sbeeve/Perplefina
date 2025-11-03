@@ -9,6 +9,10 @@ import { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { AIMessage, BaseMessage, HumanMessage } from '@langchain/core/messages';
 import { ChatOpenAI } from '@langchain/openai';
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 interface ChatModel {
   provider: string;
   model: string;
@@ -71,8 +75,21 @@ export const POST = async (req: Request) => {
     );
 
     return Response.json({ suggestions }, { status: 200 });
-  } catch (err) {
+  } catch (err: any) {
     console.error(`An error occurred while generating suggestions: ${err}`);
+    console.error('Error details:', err?.message, err?.stack);
+    
+    // Check for API key errors
+    if (err?.message?.includes('API key not valid') || err?.message?.includes('API_KEY_INVALID')) {
+      return Response.json(
+        { 
+          message: 'Invalid API key. Please check your Gemini API key configuration.',
+          error: 'API_KEY_INVALID'
+        },
+        { status: 401 },
+      );
+    }
+    
     return Response.json(
       { message: 'An error occurred while generating suggestions' },
       { status: 500 },

@@ -9,6 +9,10 @@ import { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { AIMessage, BaseMessage, HumanMessage } from '@langchain/core/messages';
 import { ChatOpenAI } from '@langchain/openai';
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 interface ChatModel {
   provider: string;
   model: string;
@@ -73,8 +77,31 @@ export const POST = async (req: Request) => {
     );
 
     return Response.json({ images }, { status: 200 });
-  } catch (err) {
+  } catch (err: any) {
     console.error(`An error occurred while searching images: ${err}`);
+    
+    // Check for API key errors
+    if (err?.message?.includes('API key not valid') || err?.message?.includes('API_KEY_INVALID')) {
+      return Response.json(
+        { 
+          error: 'Invalid API key. Please check your model configuration in settings.',
+          details: 'The API key for the selected model is invalid or expired. Please update it in your config.toml file.'
+        },
+        { status: 401 },
+      );
+    }
+    
+    // Check for model availability errors
+    if (err?.message?.includes('may not be available')) {
+      return Response.json(
+        { 
+          error: 'Selected model is not available',
+          details: err.message
+        },
+        { status: 400 },
+      );
+    }
+    
     return Response.json(
       { message: 'An error occurred while searching images' },
       { status: 500 },

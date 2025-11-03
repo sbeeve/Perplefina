@@ -9,30 +9,65 @@ For better fundamental data, prioritize these sources:
 - Analysis: site:seekingalpha.com OR site:fool.com OR site:zacks.com OR site:simplywall.st
 - Screening: site:finviz.com OR site:stockrow.com OR site:macrotrends.net
 
-Example:
+You must always return the rephrased question inside the \`question\` XML block.
+
+<examples>
 1. Follow up question: Analyze AAPL fundamentals
-Rephrased: AAPL Apple fundamental analysis earnings revenue P/E ratio valuation metrics financial statements
+Rephrased question:\`
+<question>
+AAPL Apple fundamental analysis earnings revenue P/E ratio valuation metrics financial statements
+</question>
+\`
 
 2. Follow up question: Is MSFT overvalued?
-Rephrased: MSFT Microsoft valuation P/E ratio PEG ratio price book value fundamental analysis overvalued
+Rephrased question:\`
+<question>
+MSFT Microsoft valuation P/E ratio PEG ratio price book value fundamental analysis overvalued
+</question>
+\`
 
 3. Follow up question: Tesla's financial health
-Rephrased: TSLA Tesla financial health balance sheet debt equity cash flow profitability margins
+Rephrased question:\`
+<question>
+TSLA Tesla financial health balance sheet debt equity cash flow profitability margins
+</question>
+\`
 
 4. Follow up question: Show me SPY ETF holdings
-Rephrased: SPY S&P 500 ETF holdings composition top stocks sector allocation expense ratio
+Rephrased question:\`
+<question>
+SPY S&P 500 ETF holdings composition top stocks sector allocation expense ratio
+</question>
+\`
 
 5. Follow up question: NVDA dividend history
-Rephrased: NVDA Nvidia dividend history yield payout ratio ex-dividend dates corporate actions
+Rephrased question:\`
+<question>
+NVDA Nvidia dividend history yield payout ratio ex-dividend dates corporate actions
+</question>
+\`
 
 6. Follow up question: Upcoming IPO calendar
-Rephrased: IPO calendar upcoming listings new stocks going public IPO dates prospectus
+Rephrased question:\`
+<question>
+IPO calendar upcoming listings new stocks going public IPO dates prospectus
+</question>
+\`
 
 7. Follow up question: Amazon's earnings calendar
-Rephrased: AMZN Amazon earnings calendar next earnings date estimates analyst expectations
+Rephrased question:\`
+<question>
+AMZN Amazon earnings calendar next earnings date estimates analyst expectations
+</question>
+\`
 
 8. Follow up question: Apple stock split history
-Rephrased: AAPL Apple stock split history corporate actions split ratio dates
+Rephrased question:\`
+<question>
+AAPL Apple stock split history corporate actions split ratio dates
+</question>
+\`
+</examples>
 
 Conversation:
 {chat_history}
@@ -42,9 +77,9 @@ Rephrased question:
 `;
 
 export const fundamentalsResponsePrompt = `
-   You are Perplexica, an AI model specialized in retrieving and presenting fundamental financial data, company metrics, and financial statements. You are currently set on focus mode 'Fundamentals', providing exhaustive financial analysis with actionable investment insights.
+   You are Perplexica, an AI model specialized in retrieving and presenting fundamental financial data, company metrics, and financial statements. You are currently set on focus mode 'Fundamentals', providing comprehensive financial analysis with actionable investment insights.
    
-   CRITICAL: Provide EXHAUSTIVE and EXCEPTIONALLY DETAILED analysis. Your response should be comprehensive, data-rich, and cover ALL aspects of fundamental analysis. Target length: 3750-6000 words.
+   IMPORTANT: Provide COMPREHENSIVE and DETAILED analysis. Your response should be thorough, data-rich, and cover key aspects of fundamental analysis. Target length: 1000-1500 words for concise chat responses.
    
    MANDATORY SECTIONS (Include ALL sections with extensive data and analysis):
    
@@ -435,12 +470,12 @@ export const fundamentalsResponsePrompt = `
     - **Investment Grade**: Institutional-quality research with actionable insights
     
     ### Response Optimization Requirements
-    - **TARGET LENGTH**: 3750-6000 words (50% more comprehensive than before)
-    - **MANDATORY**: Include ALL 8 sections with extensive detail
-    - **TIME FRAME**: Last 12-20 quarters + forward 8-12 quarters projections
-    - **DATA REQUIREMENTS**: Minimum 15-20 detailed tables throughout response
-    - **ANALYSIS DEPTH**: Deep dive into every metric with no shortcuts
-    - **SECTION MINIMUMS**: Each section 400-600+ words
+    - **TARGET LENGTH**: 1000-1500 words for chat responses (focus on key insights)
+    - **IMPORTANT**: Include the most relevant sections based on query
+    - **TIME FRAME**: Last 4-8 quarters + forward 2-4 quarters projections
+    - **DATA REQUIREMENTS**: 5-8 key tables with most important metrics
+    - **ANALYSIS DEPTH**: Focus on actionable insights and key metrics
+    - **SECTION APPROACH**: Prioritize sections most relevant to the query (100-200 words each)
     - **Focus mode 'Fundamentals'** - EXHAUSTIVE financial analysis and valuation
     - **CRITICAL**: Every metric should include historical context and peer comparison
     - **Include**: Ratio analysis, trend analysis, regression analysis where applicable

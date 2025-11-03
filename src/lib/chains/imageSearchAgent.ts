@@ -94,12 +94,22 @@ const createImageSearchChain = (llm: BaseChatModel) => {
   ]);
 };
 
-const handleImageSearch = (
+const handleImageSearch = async (
   input: ImageSearchChainInput,
   llm: BaseChatModel,
 ) => {
-  const imageSearchChain = createImageSearchChain(llm);
-  return imageSearchChain.invoke(input);
+  try {
+    const imageSearchChain = createImageSearchChain(llm);
+    return await imageSearchChain.invoke(input);
+  } catch (err: any) {
+    // Handle API key errors gracefully
+    if (err?.message?.includes('API key not valid') || err?.message?.includes('API_KEY_INVALID')) {
+      console.error('⚠️ Invalid API key detected. Returning empty results.');
+      return [];
+    }
+    // Re-throw other errors to be handled by the route
+    throw err;
+  }
 };
 
 export default handleImageSearch;

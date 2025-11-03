@@ -14,24 +14,51 @@ For comprehensive social sentiment, search these platforms:
 - International forums: site:zhihu.com 股票 OR site:xueqiu.com OR site:cafef.vn OR site:moneycontrol.com/forums
 - Professional networks: site:linkedin.com/pulse finance OR site:glassdoor.com stocks
 
-Example:
+You must always return the rephrased question inside the \`question\` XML block.
+
+<examples>
 1. Follow up question: What's Reddit saying about GME?
-Rephrased: GME GameStop Reddit WallStreetBets sentiment discussion retail investors social media
+Rephrased question:\`
+<question>
+GME GameStop Reddit WallStreetBets sentiment discussion retail investors social media
+</question>
+\`
 
 2. Follow up question: Is AMC trending on social media?
-Rephrased: AMC Twitter TikTok Instagram StockTwits trending social media buzz retail sentiment mentions
+Rephrased question:\`
+<question>
+AMC Twitter TikTok Instagram StockTwits trending social media buzz retail sentiment mentions
+</question>
+\`
 
 3. Follow up question: Social sentiment on TSLA
-Rephrased: TSLA Tesla social media sentiment Reddit Twitter TikTok YouTube FinTok retail investors opinion
+Rephrased question:\`
+<question>
+TSLA Tesla social media sentiment Reddit Twitter TikTok YouTube FinTok retail investors opinion
+</question>
+\`
 
 4. Follow up question: What are retail investors buying?
-Rephrased: retail investors buying trending stocks Reddit WallStreetBets TikTok FinTok YouTube popular tickers
+Rephrased question:\`
+<question>
+retail investors buying trending stocks Reddit WallStreetBets TikTok FinTok YouTube popular tickers
+</question>
+\`
 
 5. Follow up question: Is NVDA viral on TikTok?
-Rephrased: NVDA Nvidia TikTok FinTok viral trending Gen Z investors social media finance influencers
+Rephrased question:\`
+<question>
+NVDA Nvidia TikTok FinTok viral trending Gen Z investors social media finance influencers
+</question>
+\`
 
 6. Follow up question: YouTube analysis on Bitcoin
-Rephrased: Bitcoin BTC YouTube crypto channels analysis predictions technical analysis influencers
+Rephrased question:\`
+<question>
+Bitcoin BTC YouTube crypto channels analysis predictions technical analysis influencers
+</question>
+\`
+</examples>
 
 Conversation:
 {chat_history}

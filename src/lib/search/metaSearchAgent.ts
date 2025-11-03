@@ -50,6 +50,7 @@ interface Config {
   responsePrompt: string;
   activeEngines: string[];
   maxSources?: number;
+  focusMode?: string; // Track which agent is running
 }
 
 type BasicChainInput = {
@@ -360,6 +361,19 @@ class MetaSearchAgent implements MetaSearchAgentType {
       this.strParser,
     ]).withConfig({
       runName: 'FinalResponseGenerator',
+      callbacks: [
+        {
+          handleLLMStart: async () => {
+            console.log('[DEBUG] LLM started generating response...');
+          },
+          handleLLMEnd: async () => {
+            console.log('[DEBUG] LLM finished generating response');
+          },
+          handleLLMError: async (err: Error) => {
+            console.error('[ERROR] LLM error:', err.message);
+          },
+        },
+      ],
     });
   }
 
@@ -682,32 +696,58 @@ class MetaSearchAgent implements MetaSearchAgentType {
     stream: AsyncGenerator<StreamEvent, any, any>,
     emitter: eventEmitter,
   ) {
-    for await (const event of stream) {
-      if (
-        event.event === 'on_chain_end' &&
-        event.name === 'FinalSourceRetriever'
-      ) {
-        ``;
-        emitter.emit(
-          'data',
-          JSON.stringify({ type: 'sources', data: event.data.output }),
-        );
+    try {
+      const startTime = Date.now();
+      const focusMode = this.config.focusMode || 'unknown';
+      let eventCount = 0;
+      let chunkCount = 0;
+      
+      const getElapsedTime = () => {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const minutes = Math.floor(elapsed / 60);
+        const seconds = elapsed % 60;
+        return `${minutes}m ${seconds}s`;
+      };
+      
+      for await (const event of stream) {
+        eventCount++;
+        
+        // Log all events to see what's happening
+        console.log(`[${focusMode.toUpperCase()}] [${getElapsedTime()}] Event ${eventCount}: ${event.event} | name: ${event.name}`);
+        
+        if (
+          event.event === 'on_chain_end' &&
+          event.name === 'FinalSourceRetriever'
+        ) {
+          console.log(`[${focusMode.toUpperCase()}] [${getElapsedTime()}] FinalSourceRetriever completed, starting response generation...`);
+          emitter.emit(
+            'data',
+            JSON.stringify({ type: 'sources', data: event.data.output }),
+          );
+        }
+        if (
+          event.event === 'on_chain_stream' &&
+          event.name === 'FinalResponseGenerator'
+        ) {
+          chunkCount++;
+          console.log(`[${focusMode.toUpperCase()}] [${getElapsedTime()}] CHUNK #${chunkCount}:`, event.data.chunk);
+          emitter.emit(
+            'data',
+            JSON.stringify({ type: 'response', data: event.data.chunk }),
+          );
+        }
+        if (
+          event.event === 'on_chain_end' &&
+          event.name === 'FinalResponseGenerator'
+        ) {
+          console.log(`[${focusMode.toUpperCase()}] [${getElapsedTime()}] FinalResponseGenerator completed`);
+          emitter.emit('end');
+        }
       }
-      if (
-        event.event === 'on_chain_stream' &&
-        event.name === 'FinalResponseGenerator'
-      ) {
-        emitter.emit(
-          'data',
-          JSON.stringify({ type: 'response', data: event.data.chunk }),
-        );
-      }
-      if (
-        event.event === 'on_chain_end' &&
-        event.name === 'FinalResponseGenerator'
-      ) {
-        emitter.emit('end');
-      }
+      console.log(`[${focusMode.toUpperCase()}] [${getElapsedTime()}] Stream completed. Total events: ${eventCount}, Text chunks: ${chunkCount}`);
+    } catch (error) {
+      console.error('[ERROR] Stream handling error:', error);
+      emitter.emit('error', error);
     }
   }
 
