@@ -2,6 +2,9 @@ FROM node:20.18.0-slim AS builder
 
 WORKDIR /home/perplexica
 
+# Install build dependencies
+RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
+
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --network-timeout 600000
 
@@ -10,6 +13,9 @@ COPY src ./src
 COPY public ./public
 
 RUN mkdir -p /home/perplexica/data
+
+# Set NODE_ENV to production for build optimization
+ENV NODE_ENV=production
 RUN yarn build
 
 RUN yarn add --dev @vercel/ncc

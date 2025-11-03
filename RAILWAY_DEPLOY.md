@@ -102,12 +102,22 @@ Railway will automatically deploy both services. Watch the logs:
 
 ## Cost Estimate
 
-- **Hobby Plan**: ~$5/month
-  - App service: ~$3
-  - SearXNG: ~$2
+- **Trial/Hobby Plan**: $5 in credits (limited resources)
+  - ⚠️ Build may fail on free tier due to memory limits
+  - App service: ~$3/month
+  - SearXNG: ~$2/month
   - PostgreSQL: Included
 
-- **Pro Plan**: ~$20/month (if you need more resources)
+- **Pro Plan**: ~$20/month (recommended for stable builds)
+  - More build resources
+  - Better for production use
+
+### ⚠️ Build Issues on Free Tier?
+
+If you see "EOF" or timeout errors during build:
+1. Upgrade to Pro plan for more build resources
+2. Or try deploying to Vercel/Netlify (frontend) + Railway (backend)
+3. Or use Docker locally and push to Docker Hub, then deploy image to Railway
 
 ## Next Steps
 
