@@ -36,6 +36,10 @@ COPY --from=builder /home/perplexica/migrator/index.js ./migrate.js
 
 RUN mkdir /home/perplexica/uploads
 
+# Set environment variables for Next.js standalone server
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
+
 COPY entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
 CMD ["./entrypoint.sh"]
