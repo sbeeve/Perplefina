@@ -18,7 +18,7 @@ RUN mkdir -p /home/perplexica/data
 ENV NODE_ENV=production
 RUN yarn build
 
-RUN yarn add --dev @vercel/ncc
+RUN yarn add --dev @vercel/ncc typescript
 RUN yarn ncc build ./src/lib/db/migrate.ts -o migrator
 
 FROM node:20.18.0-slim
