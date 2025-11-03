@@ -14,11 +14,11 @@ COPY public ./public
 
 RUN mkdir -p /home/perplexica/data
 
-# Set NODE_ENV to production for build optimization
-ENV NODE_ENV=production
+# Build the application (don't set NODE_ENV=production yet to keep dev deps)
 RUN yarn build
 
-RUN yarn add --dev @vercel/ncc typescript
+# Build the migrator
+RUN yarn add --dev @vercel/ncc
 RUN yarn ncc build ./src/lib/db/migrate.ts -o migrator
 
 FROM node:20.18.0-slim
